@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<title>Üriner Kateter Karar Destek</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
+  .header{background:#fff;border-bottom:1px solid #e5e5e5;padding:14px 16px;position:sticky;top:0;z-index:10}
+  .header-title{font-size:15px;font-weight:600;color:#1a1a1a}
+  .header-sub{font-size:12px;color:#888;margin-top:2px}
+  .container{max-width:480px;margin:0 auto;padding:16px}
+  .card{background:#fff;border-radius:14px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+  .progress-wrap{margin-bottom:20px}
+  .progress-bar{height:4px;background:#e5e5e5;border-radius:2px;overflow:hidden}
+  .progress-fill{height:100%;background:#1a73e8;border-radius:2px;transition:width 0.35s ease}
+  .step-label{font-size:12px;color:#888;margin-top:8px}
+  .question{font-size:17px;font-weight:600;color:#1a1a1a;line-height:1.4;margin-bottom:6px}
+  .hint{font-size:13px;color:#888;margin-bottom:18px;line-height:1.5}
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+  .opt{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #e5e5e5;border-radius:12px;cursor:pointer;font-size:14px;color:#1a1a1a;background:#fff;transition:all 0.15s;user-select:none;-webkit-user-select:none}
+  .opt:active{background:#f0f6ff}
+  .opt.selected{border-color:#1a73e8;background:#e8f0fe;color:#1558b0}
+  .opt input{accent-color:#1a73e8;width:18px;height:18px;flex-shrink:0}
+  .search-input{width:100%;padding:14px 16px;border:1.5px solid #e5e5e5;border-radius:12px;font-size:15px;color:#1a1a1a;background:#fff;outline:none;-webkit-appearance:none;margin-bottom:8px}
+  .search-input:focus{border-color:#1a73e8}
+  .suggestions{border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:8px}
+  .sug-item{padding:13px 16px;font-size:14px;cursor:pointer;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center}
+  .sug-item:last-child{border-bottom:none}
+  .sug-item:active{background:#f5f5f5}
+  .sug-item .sug-name{color:#1a1a1a;font-weight:500}
+  .sug-item .sug-cat{font-size:12px;color:#888;margin-top:2px}
+  .sug-left{flex:1}
+  .sug-arrow{color:#bbb;font-size:16px}
+  .selected-am{display:flex;align-items:center;gap:10px;padding:14px 16px;border:2px solid #1a73e8;border-radius:12px;background:#e8f0fe;color:#1558b0;font-size:14px;margin-bottom:8px;font-weight:500}
+  .selected-am .clear{margin-left:auto;background:none;border:1px solid #1a73e8;border-radius:8px;padding:4px 10px;color:#1a73e8;font-size:12px;cursor:pointer}
+  .nav{display:flex;gap:10px;margin-top:4px}
+  .btn{flex:1;padding:15px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all 0.15s}
+  .btn-back{background:#f0f0f0;color:#555}
+  .btn-next{background:#1a73e8;color:#fff}
+  .btn-next:disabled{background:#b0c8f5;cursor:not-allowed}
+  .btn:active{opacity:0.85;transform:scale(0.98)}
+  .result-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-size:15px;font-weight:700;margin-bottom:16px}
+  .badge-endike{background:#e6f4ea;color:#137333}
+  .badge-hayir{background:#fce8e6;color:#c5221f}
+  .badge-belirsiz{background:#fef7e0;color:#b06000}
+  .reasons{list-style:none;padding:0}
+  .reasons li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0;font-size:13.5px;color:#555;line-height:1.5}
+  .reasons li:last-child{border-bottom:none}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+  .dot-green{background:#137333}
+  .dot-red{background:#c5221f}
+  .dot-amber{background:#b06000}
+  .medikolegal{margin-top:14px;padding:12px 14px;background:#f8f9fa;border-radius:10px;font-size:12.5px;color:#555;line-height:1.6;border-left:3px solid #1a73e8}
+  .medikolegal strong{color:#1558b0}
+  .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+  .summary-item{background:#f8f9fa;border-radius:10px;padding:10px 12px}
+  .summary-item .s-label{font-size:11px;color:#888;margin-bottom:3px}
+  .summary-item .s-val{font-size:13px;color:#1a1a1a;font-weight:500}
+  .restart-btn{width:100%;padding:15px;border-radius:12px;font-size:15px;font-weight:600;background:#f0f0f0;color:#1a1a1a;border:none;cursor:pointer;margin-top:4px}
+  .restart-btn:active{background:#e0e0e0}
+  .no-results{padding:14px 16px;font-size:13px;color:#888;text-align:center}
+  .chip{display:inline-block;background:#f0f0f0;border-radius:6px;padding:2px 8px;font-size:11px;color:#555;margin-left:8px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-title">Üriner Kateter Karar Destek</div>
+  <div class="header-sub">Anestezi öncesi değerlendirme aracı</div>
+</div>
+<div class="container">
+  <div id="app"></div>
+</div>
+<script>
+const ameliyatDB=[
+  {ad:'Anterior rezeksiyon',kat:'pelvik',label:'Kolorektal'},
+  {ad:'Anterior kolporrafi',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'Apendektomi',kat:'minor',label:'Genel Cerrahi'},
+  {ad:'Apendektomi (laparoskopik)',kat:'laparoskopik_minor',label:'Genel Cerrahi'},
+  {ad:'Aort anevrizması onarımı',kat:'kardiyak',label:'Vasküler'},
+  {ad:'Artroplasti - kalça',kat:'ortopedi',label:'Ortopedi'},
+  {ad:'Artroplasti - diz',kat:'ortopedi',label:'Ortopedi'},
+  {ad:'Bariatrik cerrahi (sleeve/bypass)',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Bilateral inguinal herni',kat:'minor',label:'Genel Cerrahi'},
+  {ad:'Bypass (koroner)',kat:'kardiyak',label:'Kardiyak'},
+  {ad:'Sistektomi (radikal)',kat:'urolojik',label:'Üroloji'},
+  {ad:'Sistoskopi',kat:'minor_uro',label:'Üroloji'},
+  {ad:'Diz artroskopisi',kat:'alt_eks',label:'Ortopedi'},
+  {ad:'Distal gastrektomi',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Femur fraktürü ORIF',kat:'ortopedi',label:'Ortopedi'},
+  {ad:'Fundoplikasyon',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Gastrektomi (total)',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Hemoroidektomi',kat:'minor',label:'Genel Cerrahi'},
+  {ad:'Hepatektomi',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Histerektomi (abdominal)',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'Histerektomi (laparoskopik)',kat:'laparoskopik',label:'Jinekoloji'},
+  {ad:'Histerektomi (vajinal)',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'İnguinal herni (unilateral)',kat:'minor',label:'Genel Cerrahi'},
+  {ad:'Karotis endarterektomi',kat:'kardiyak',label:'Vasküler'},
+  {ad:'Kardiyak kapak replasmanı',kat:'kardiyak',label:'Kardiyak'},
+  {ad:'Karın duvarı hernisi (insizyonel)',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Kolesistektomi (laparoskopik)',kat:'laparoskopik_minor',label:'Genel Cerrahi'},
+  {ad:'Kolesistektomi (açık)',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Kraniyotomi',kat:'noro',label:'Nöroşirürji'},
+  {ad:'Laparoskopik miomektomi',kat:'laparoskopik',label:'Jinekoloji'},
+  {ad:'Laparoskopik kolon rezeksiyonu',kat:'laparoskopik',label:'Kolorektal'},
+  {ad:'Laminektomi',kat:'noro',label:'Nöroşirürji'},
+  {ad:'Mastektomi',kat:'minor',label:'Meme'},
+  {ad:'Mediastinoskopi',kat:'torasik',label:'Torasik'},
+  {ad:'Miomektomi (abdominal)',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'Nefektomi',kat:'urolojik',label:'Üroloji'},
+  {ad:'Nefrolitotomi (PCNL)',kat:'urolojik',label:'Üroloji'},
+  {ad:'Ovaryan kist eksizyonu',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'Pankreas cerrahisi (Whipple)',kat:'ust_abdomen',label:'Genel Cerrahi'},
+  {ad:'Pelvik taban rekonstrüksiyonu',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'Prostatektomi (radikal)',kat:'pelvik',label:'Üroloji'},
+  {ad:'Rektum rezeksiyonu',kat:'pelvik',label:'Kolorektal'},
+  {ad:'Sigmoid kolon rezeksiyonu',kat:'pelvik',label:'Kolorektal'},
+  {ad:'Spinal füzyon',kat:'noro',label:'Nöroşirürji'},
+  {ad:'TAVI',kat:'kardiyak',label:'Kardiyak'},
+  {ad:'Tiroid cerrahisi',kat:'minor',label:'Genel Cerrahi'},
+  {ad:'Torakotomi',kat:'torasik',label:'Torasik'},
+  {ad:'Total kalça protezi',kat:'ortopedi',label:'Ortopedi'},
+  {ad:'Total diz protezi',kat:'ortopedi',label:'Ortopedi'},
+  {ad:'TUR-B (mesane)',kat:'urolojik',label:'Üroloji'},
+  {ad:'TUR-P (prostat)',kat:'urolojik',label:'Üroloji'},
+  {ad:'Üreteroskopi',kat:'urolojik',label:'Üroloji'},
+  {ad:'Üreteral stent',kat:'urolojik',label:'Üroloji'},
+  {ad:'Vajinal histerektomi',kat:'pelvik',label:'Jinekoloji'},
+  {ad:'Vasküler bypass (femoral)',kat:'kardiyak',label:'Vasküler'},
+  {ad:'Vertebroplasti',kat:'noro',label:'Nöroşirürji'},
+];
+
+const katInfo={
+  pelvik:{skor:3,metin:'Pelvik/kolorektal cerrahi — mesane yakınlığı, disseksiyon riski'},
+  urolojik:{skor:3,metin:'Ürolojik cerrahi — zorunlu cerrahi alan'},
+  kardiyak:{skor:3,metin:'Kardiyak/vasküler cerrahi — saatlik idrar çıkışı izlemi şart'},
+  noro:{skor:3,metin:'Nöroşirürji — uzun süre, pozisyon, ICP yönetimi'},
+  laparoskopik:{skor:3,metin:'Laparoskopik pelvik — trokar öncesi mesane boşaltılmalı'},
+  torasik:{skor:2,metin:'Torasik cerrahi — uzun süre, hemodinamik izlem'},
+  ortopedi:{skor:1,metin:'Ortopedi — spinal anestezi + uzun süre kombinasyonunda endike'},
+  ust_abdomen:{skor:1,metin:'Üst abdomen — süre ve monitorizasyon ihtiyacına göre'},
+  laparoskopik_minor:{skor:0,metin:'Laparoskopik minör — kısa süre, mesane yakınlığı düşük'},
+  minor:{skor:-2,metin:'Minör cerrahi — pelvik alan dışı, kısa süre'},
+  minor_uro:{skor:0,metin:'Minör ürolojik — klinik değerlendirme gerekli'},
+  alt_eks:{skor:-2,metin:'Alt ekstremite — pelvik alan dışı'},
+};
+
+const questions=[
+  {id:'yas',q:'Hastanın yaş grubu?',hint:'İleri yaşta BPH ve nöropati riski artar.',type:'radio',
+    options:[{label:'18 yaş altı (pediatrik)',value:'pediatrik'},{label:'18–60 yaş',value:'genc'},{label:'60–75 yaş',value:'orta'},{label:'75 yaş üzeri',value:'yasli'}]},
+  {id:'cinsiyet',q:'Hasta cinsiyeti?',hint:'',type:'radio',
+    options:[{label:'Erkek',value:'erkek'},{label:'Kadın',value:'kadin'}]},
+  {id:'amtip',q:'Ameliyat adı?',hint:'İlk birkaç harfi yazın, öneriler çıksın. Listede yoksa tam adı yazıp devam edin.',type:'search',options:[]},
+  {id:'sure',q:'Tahmini ameliyat süresi?',hint:'Anestezi süresi dahil.',type:'radio',
+    options:[{label:'60 dakika altı',value:'kisa'},{label:'60–90 dakika',value:'orta'},{label:'90–120 dakika',value:'uzun'},{label:'120 dakika üzeri',value:'cok_uzun'}]},
+  {id:'anestezi',q:'Planlanan anestezi türü?',hint:'',type:'radio',
+    options:[{label:'Genel anestezi',value:'genel'},{label:'Spinal — düşük doz / kısa etkili',value:'spinal_kisa'},{label:'Spinal — yüksek doz / uzun etkili',value:'spinal_uzun'},{label:'Spinal + intratekal opioid',value:'spinal_opioid'},{label:'Epidural',value:'epidural'},{label:'Lokal / sedasyon',value:'lokal'}]},
+  {id:'risk',q:'Hasta risk faktörleri?',hint:'Birden fazla seçilebilir.',type:'checkbox',
+    options:[{label:'BPH / alt üriner sistem semptomları',value:'bph'},{label:'Nörojenik mesane',value:'noro_mesane'},{label:'Diyabetik nöropati',value:'dm_noro'},{label:'Morbid obezite (BKI >40)',value:'obezite'},{label:'Böbrek yetmezliği / oligüri riski',value:'bby'},{label:'Sepsis / hemodinamik instabilite',value:'sepsis'},{label:'Risk faktörü yok',value:'yok'}]},
+  {id:'sivi',q:'Büyük hacimli sıvı veya kan transfüzyonu bekleniyor mu?',hint:'Major kanama riski veya >2L sıvı replasmanı.',type:'radio',
+    options:[{label:'Evet',value:'evet'},{label:'Hayır / belirsiz',value:'hayir'}]},
+];
+
+let step=0,answers={},searchText='';
+
+function searchAm(q){
+  if(!q||q.length<1)return[];
+  const ql=q.toLowerCase().replace(/[iı]/g,'[iı]').replace(/[sş]/g,'[sş]').replace(/[cç]/g,'[cç]').replace(/[gğ]/g,'[gğ]').replace(/[oö]/g,'[oö]').replace(/[uü]/g,'[uü]');
+  try{
+    const re=new RegExp(ql,'i');
+    return ameliyatDB.filter(a=>re.test(a.ad)||re.test(a.label)).slice(0,7);
+  }catch(e){
+    return ameliyatDB.filter(a=>a.ad.toLowerCase().includes(q.toLowerCase())||a.label.toLowerCase().includes(q.toLowerCase())).slice(0,7);
+  }
+}
+
+function getAmKat(){
+  const v=answers.amtip;
+  if(!v)return null;
+  const am=ameliyatDB.find(a=>a.ad===v);
+  if(am)return am.kat;
+  const t=v.toLowerCase();
+  if(/prostat|mesane|uret|nefr|tur[-\s]|ürolog|nefrolitot|sistekt/i.test(t))return'urolojik';
+  if(/rektum|kolon|pelvik|histerektomi|over|vajin|miom|uterin|kolpor/i.test(t))return'pelvik';
+  if(/kalp|bypass|aort|vasküler|karotis|tavi|koroner|kapak/i.test(t))return'kardiyak';
+  if(/kraniy|beyin|spinal füz|laminekt|vertebr|nöroşir/i.test(t))return'noro';
+  if(/laparoskopik.*hister|laparoskopik.*kolon|laparoskopik.*miom/i.test(t))return'laparoskopik';
+  if(/laparoskopik/i.test(t))return'laparoskopik_minor';
+  if(/herni|hemor|apend|tiroid|mastekt|sentinel/i.test(t))return'minor';
+  if(/kalça prot|diz prot|total kalça|total diz|artroplasti/i.test(t))return'ortopedi';
+  if(/ortopedi|orif|femur|tibiya|humerus/i.test(t))return'ortopedi';
+  if(/gastrektomi|hepat|pankreas|kolesi|bariattr|sleeve|fundopli|whipple/i.test(t))return'ust_abdomen';
+  if(/torak|akciğer|pnöm|mediastin/i.test(t))return'torasik';
+  return'belirsiz';
+}
+
+function getResult(){
+  const a=answers;
+  let skor=0,nedenler=[];
+  const kat=getAmKat();
+  const ki=kat?katInfo[kat]:null;
+  if(ki){skor+=ki.skor;nedenler.push({tip:ki.skor>=3?'evet':ki.skor>=1?'belirsiz':'hayir',metin:ki.metin});}
+  else if(a.amtip){nedenler.push({tip:'belirsiz',metin:'"'+a.amtip+'" — otomatik kategorilendirilemeyen ameliyat, klinik değerlendirme yapın'});}
+  if(a.sure==='cok_uzun'){skor+=3;nedenler.push({tip:'evet',metin:'Süre >120 dk — mesane dolması kaçınılmaz'});}
+  else if(a.sure==='uzun'){skor+=2;nedenler.push({tip:'evet',metin:'Süre 90–120 dk — endikasyon güçlü'});}
+  else if(a.sure==='orta'){skor+=1;nedenler.push({tip:'belirsiz',metin:'Süre 60–90 dk — diğer faktörlere göre karar'});}
+  else if(a.sure==='kisa'){skor-=2;nedenler.push({tip:'hayir',metin:'Süre <60 dk — spontan miksiyon beklenir'});}
+  if(a.anestezi==='spinal_opioid'){skor+=3;nedenler.push({tip:'evet',metin:'İntratekal opioid — üriner retansiyon riski çok yüksek'});}
+  else if(a.anestezi==='spinal_uzun'){skor+=2;nedenler.push({tip:'evet',metin:'Yüksek doz spinal — uzun blok süresi'});}
+  else if(a.anestezi==='genel'){skor+=1;nedenler.push({tip:'belirsiz',metin:'Genel anestezi — süre ve alana göre değerlendirin'});}
+  else if(a.anestezi==='spinal_kisa'){nedenler.push({tip:'hayir',metin:'Düşük doz kısa spinal — tek başına endikasyon değil'});}
+  else if(a.anestezi==='lokal'){skor-=2;nedenler.push({tip:'hayir',metin:'Lokal/sedasyon — retansiyon riski düşük'});}
+  const riskler=Array.isArray(a.risk)?a.risk:[];
+  if(riskler.includes('bph')&&a.cinsiyet!=='kadin'){skor+=2;nedenler.push({tip:'evet',metin:'BPH — anestezi ile retansiyon kaçınılmaz'});}
+  if(riskler.includes('noro_mesane')){skor+=3;nedenler.push({tip:'evet',metin:'Nörojenik mesane — bozulmuş kontrol'});}
+  if(riskler.includes('sepsis')){skor+=3;nedenler.push({tip:'evet',metin:'Sepsis/hemodinamik instabilite — saatlik çıkış izlemi zorunlu'});}
+  if(riskler.includes('bby')){skor+=2;nedenler.push({tip:'evet',metin:'Böbrek yetmezliği — oligüri takibi gerekli'});}
+  if(riskler.includes('dm_noro')){skor+=1;nedenler.push({tip:'belirsiz',metin:'Diyabetik nöropati — otonom disfonksiyon riski'});}
+  if(riskler.includes('obezite')){skor+=1;nedenler.push({tip:'belirsiz',metin:'Morbid obezite — pozisyon kaynaklı retansiyon riski'});}
+  if(a.sivi==='evet'){skor+=2;nedenler.push({tip:'evet',metin:'Büyük sıvı/kan replasmanı — sıvı dengesi için kateter şart'});}
+  if(a.yas==='yasli'){skor+=1;nedenler.push({tip:'belirsiz',metin:'İleri yaş — BPH/nöropati riski göz önünde bulundurulmalı'});}
+  let karar,kararLabel,kararClass,medikolegal;
+  if(skor>=4){
+    karar='ENDİKE';kararLabel='✓ Kateter endike';kararClass='badge-endike';
+    medikolegal='Kateter takılmaması durumunda komplikasyon gelişirse (mesane yaralanması, hemodinamik izlem eksikliği, retansiyon) anestezist ve cerrah sorumlu tutulabilir. Kararı ve gerekçesini dosyaya kaydedin.';
+  }else if(skor>=1){
+    karar='BELİRSİZ';kararLabel='⚠ Klinik değerlendirme gerekli';kararClass='badge-belirsiz';
+    medikolegal='Belirsiz vakalarda kararınızı ve gerekçesini hasta dosyasına yazın. Risk faktörleri artarsa kateterizasyona yönelin.';
+  }else{
+    karar='GEREKMİYOR';kararLabel='✗ Rutin kateter gerekmez';kararClass='badge-hayir';
+    medikolegal='Gereksiz kateterizasyon CAUTI riskini artırır ve sorumluluk doğurabilir. Spinal blok geçince spontan miksiyon değerlendirin.';
+  }
+  return{karar,kararLabel,kararClass,nedenler,medikolegal};
+}
+
+function canNext(){
+  const q=questions[step];
+  if(q.type==='checkbox')return Array.isArray(answers[q.id])&&answers[q.id].length>0;
+  if(q.type==='search')return!!answers[q.id];
+  return!!answers[q.id];
+}
+
+function renderSearch(){
+  const val=answers.amtip||'';
+  const sugs=searchText.length>0?searchAm(searchText):[];
+  if(val){
+    return`<div class="selected-am">✓ ${val}<button class="clear" onclick="clearAm()">Değiştir</button></div>`;
+  }
+  let sugHtml='';
+  if(sugs.length>0){
+    sugHtml='<div class="suggestions">'+sugs.map(s=>`<div class="sug-item" onclick="selectAm('${s.ad.replace(/'/g,"\\'")}')"><div class="sug-left"><div class="sug-name">${s.ad}</div><div class="sug-cat">${s.label}</div></div><div class="sug-arrow">›</div></div>`).join('')+'</div>';
+  }else if(searchText.length>=2){
+    sugHtml=`<div class="suggestions"><div class="no-results">Öneri bulunamadı — tam adı yazıp devam edebilirsiniz</div></div>`;
+  }
+  return`<input class="search-input" id="am-input" type="text" placeholder="Örn: histerektomi, TUR-P..." value="${searchText.replace(/"/g,'&quot;')}" oninput="onSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">${sugHtml}`;
+}
+
+function onSearch(v){
+  searchText=v;
+  if(v.length>=1&&ameliyatDB.find(a=>a.ad.toLowerCase()===v.toLowerCase())){
+    answers.amtip=ameliyatDB.find(a=>a.ad.toLowerCase()===v.toLowerCase()).ad;
+    searchText='';
+  }
+  render();
+  if(!answers.amtip){setTimeout(()=>{const i=document.getElementById('am-input');if(i){i.focus();i.setSelectionRange(v.length,v.length);}},10);}
+}
+
+function selectAm(ad){answers.amtip=ad;searchText='';render();}
+function clearAm(){delete answers.amtip;searchText='';render();setTimeout(()=>{const i=document.getElementById('am-input');if(i)i.focus();},10);}
+
+function render(){
+  const app=document.getElementById('app');
+  if(step<questions.length){
+    const q=questions[step];
+    const pct=Math.round((step/questions.length)*100);
+    let bodyHtml='';
+    if(q.type==='search'){
+      bodyHtml=renderSearch();
+    }else{
+      const cur=answers[q.id];
+      bodyHtml='<div class="options">'+q.options.map(opt=>{
+        const sel=q.type==='checkbox'?(Array.isArray(cur)&&cur.includes(opt.value)):cur===opt.value;
+        return`<label class="opt${sel?' selected':''}"><input type="${q.type}" name="${q.id}" value="${opt.value}" ${sel?'checked':''}>${opt.label}</label>`;
+      }).join('')+'</div>';
+    }
+    const ok=canNext();
+    app.innerHTML=`
+      <div class="card">
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="step-label">Soru ${step+1} / ${questions.length}</div>
+        </div>
+        <div class="question">${q.q}</div>
+        ${q.hint?`<div class="hint">${q.hint}</div>`:''}
+        ${bodyHtml}
+        <div class="nav">
+          ${step>0?`<button class="btn btn-back" onclick="prevStep()">← Geri</button>`:''}
+          <button class="btn btn-next" onclick="nextStep()" ${ok?'':'disabled'}>${step===questions.length-1?'Sonucu Gör →':'Devam →'}</button>
+        </div>
+      </div>`;
+    if(q.type!=='search'){
+      app.querySelectorAll(`input[name="${q.id}"]`).forEach(inp=>{
+        inp.addEventListener('change',()=>{
+          if(q.type==='checkbox'){
+            const checked=Array.from(app.querySelectorAll(`input[name="${q.id}"]:checked`)).map(i=>i.value);
+            answers[q.id]=checked.includes('yok')?['yok']:checked.filter(v=>v!=='yok');
+          }else{
+            answers[q.id]=inp.value;
+          }
+          render();
+        });
+      });
+    }
+  }else{
+    const{karar,kararLabel,kararClass,nedenler,medikolegal}=getResult();
+    const nedHtml=nedenler.map(n=>`<li><span class="dot dot-${n.tip==='evet'?'green':n.tip==='hayir'?'red':'amber'}"></span><span>${n.metin}</span></li>`).join('');
+    const riskVal=answers.risk;
+    const riskText=Array.isArray(riskVal)?riskVal.map(v=>{const q=questions.find(q=>q.id==='risk');return q.options.find(o=>o.value===v)?.label||v;}).join(', '):'Belirtilmedi';
+    const yasMap={pediatrik:'Pediatrik',genc:'18–60 yaş',orta:'60–75 yaş',yasli:'75+ yaş'};
+    const sureMap={kisa:'<60 dk',orta:'60–90 dk',uzun:'90–120 dk',cok_uzun:'>120 dk'};
+    const anMap={genel:'Genel',spinal_kisa:'Spinal kısa',spinal_uzun:'Spinal uzun',spinal_opioid:'Spinal + opioid',epidural:'Epidural',lokal:'Lokal'};
+    app.innerHTML=`
+      <div class="card">
+        <span class="result-badge ${kararClass}">${kararLabel}</span>
+        <ul class="reasons">${nedHtml}</ul>
+        <div class="medikolegal"><strong>Medikolegal:</strong> ${medikolegal}</div>
+      </div>
+      <div class="card">
+        <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em">Hasta Özeti</div>
+        <div class="summary-grid">
+          <div class="summary-item"><div class="s-label">Yaş</div><div class="s-val">${yasMap[answers.yas]||'-'}</div></div>
+          <div class="summary-item"><div class="s-label">Cinsiyet</div><div class="s-val">${answers.cinsiyet==='erkek'?'Erkek':'Kadın'}</div></div>
+          <div class="summary-item" style="grid-column:1/-1"><div class="s-label">Ameliyat</div><div class="s-val">${answers.amtip||'-'}</div></div>
+          <div class="summary-item"><div class="s-label">Süre</div><div class="s-val">${sureMap[answers.sure]||'-'}</div></div>
+          <div class="summary-item"><div class="s-label">Anestezi</div><div class="s-val">${anMap[answers.anestezi]||'-'}</div></div>
+          <div class="summary-item" style="grid-column:1/-1"><div class="s-label">Risk faktörleri</div><div class="s-val" style="font-size:12px">${riskText}</div></div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="restart()">↺ Yeni Hasta</button>`;
+  }
+}
+
+function nextStep(){if(!canNext())return;
+  if(questions[step].type==='search'&&!answers.amtip&&searchText.trim().length>0){answers.amtip=searchText.trim();}
+  step++;render();
+}
+function prevStep(){if(step>0){step--;render();}}
+function restart(){step=0;answers={};searchText='';render();}
+render();
+</script>
+</body>
+</html>
